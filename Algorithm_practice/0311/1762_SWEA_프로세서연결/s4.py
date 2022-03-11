@@ -1,6 +1,7 @@
 import copy
 import sys
 sys.stdin = open('input.txt')
+# 세찬
 
 def solution(n,map,core):
     stack = [(0,0,0,copy.deepcopy(map))]
@@ -66,6 +67,7 @@ def solution(n,map,core):
                 stack.append((idx+1,coreCount,lineLen,newCopyMap))
 
     answer.sort(key = lambda x:(-x[0],x[1]))
+    print(answer)
     return answer[0][1]
 
 def main():
