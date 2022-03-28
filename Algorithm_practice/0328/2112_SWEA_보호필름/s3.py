@@ -17,7 +17,7 @@ def check(D, W, K, row_data):
             return 0                # check에서 걸림
     return 1
 
-# 2. 특정 조합에서 재귀 함수를 사용해서 A or B 약물 조합 선택하기
+# 2. 특정 조합에서 재귀 함수를 사용해서 A or B 약물 조합 선택하기 -> dfs
 def modify(D, K, i, row_data, r):
     global ans
     if i == r:
@@ -48,27 +48,30 @@ def nCr(n, r, c, k):
             used[i] = 0
 
 
+
 T = int(input())
 for tc in range(1, T+1):
     D, W, K = map(int, input().split())
     row_data = [list(map(int, input().split())) for _ in range(D)]
 
-    # 약물 처리 안하고 가능한 경우
+    # 4. 약물 처리 안하고 가능한 경우
     if check(D, W, K, row_data):
         print(f'#{tc}', 0)
-    else:
-        flag = 0
-        for r in range(1, K):
-            if flag == 1:
-                break
-            d = list(range(D))
-            used = [0] * D
-            comb = [0] * r
-            numbers = []
-            nCr(D, r, 0, 0)
-            #print(numbers)
 
-            for nums in numbers:
+    # 5. 약물 처리 하는 경우
+    else:
+        flag = 0                                        # 답이 나오면 break 하기 위해
+        for r in range(1, K):                           # r개의 조합을 구하고
+           if flag == 1:
+                break
+
+           d = list(range(D))
+           used = [0] * D
+           comb = [0] * r
+           numbers = []
+           nCr(D, r, 0, 0)
+
+           for nums in numbers:                        # 조합을 하나씩 꺼내서 답이 나오는지 확인하기
                 ans = 0
                 new_data = deepcopy(row_data)
                 modify(D, K, 0, new_data, r)
@@ -78,5 +81,6 @@ for tc in range(1, T+1):
                     print(f'#{tc}', ans)
                     break
 
+        # k-1개 조합까지 사용했는데 안되면 K개가 답이다.
         if flag == 0:
             print(f'#{tc}', K)

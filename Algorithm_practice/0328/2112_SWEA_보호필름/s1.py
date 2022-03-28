@@ -1,3 +1,4 @@
+# 시간 초과 - 부분집합 조합 구하기
 import sys
 sys.stdin = open('input.txt')
 from copy import deepcopy
