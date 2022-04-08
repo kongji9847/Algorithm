@@ -56,6 +56,7 @@ def bfs(K, visited):
                 new = new_visited[:]
                 new[element] = 1
                 Q.append((element, node_cnt+1, cnt+people_N[element], new))
+                Q.append((element, node_cnt + 1, cnt, new))
 
 
 
