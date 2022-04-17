@@ -1,8 +1,10 @@
 '''
 충전량을 구할 때,
-userA: 가능한 충전기 1개/userB: 가능한 충전기 2개일 경우
-userA에서 무조건 충전기 1개를 사용해야하므로, 해당 충전량을 방문 상관없이 더해주기만 했다.
-이렇게 되면 나중에 userA: 가능한 충전기 2개/userB:가능한 충전기 1개일 경우 이미 사용한 충전기를 중복해서 충전량을 더해주게 된다.
+userA: 가능한 충전기 2개/userB:가능한 충전기 1일 경우
+userB에서 무조건 충전기 1개를 사용해야하므로, 해당 충전량을 방문 상관없이 더해주기만 했다.
+이렇게 되면 이미 사용한 충전기를 중복해서 충전량(100 + 100)을 더해주게 된다.
+
+userA를 볼 때는 사용 여부를 확인해주지 않아도 된다. 항상 최초로 사용하는 것이므로.
 '''
 
 import sys
@@ -20,42 +22,27 @@ def dfs(Ar, Ac, Br, Bc, value, n):
         return
     #4-1. 진행
     if n == 0:                                                                      # 현재 봐야할 유저가 A일 때,
-        if len(data[Ar][Ac]) == 1:                                                  # 가능한 충전기가 1개일 때
-            if not used[data[Ar][Ac][0][0]]:                                        # 현재 충전기가 사용중이 아니라면,
-                used[data[Ar][Ac][0][0]] = 1                                        # 사용중으로 표시하고
-                dfs(Ar, Ac, Br, Bc, value+data[Ar][Ac][0][1], n+1)                  # value에 현재 충전기의 충전량을 더해주고, 다음 유저로 넘어가기
-                used[data[Ar][Ac][0][0]] = 0                                        #
-            else:
-                dfs(Ar, Ac, Br, Bc, value, n + 1)
-        elif len(data[Ar][Ac]) == 0:
+        if len(data[Ar][Ac]) == 0:                                                  # 가능한 충전기가 없을 때, 다음 유저로 넘어가기
             dfs(Ar, Ac, Br, Bc, value, n+1)
-        elif len(data[Ar][Ac]) > 1:
-            for i in range(len(data[Ar][Ac])):
-                if used[data[Ar][Ac][i][0]] == 0:
-                    used[data[Ar][Ac][i][0]] = 1
-                    dfs(Ar, Ac, Br, Bc, value + data[Ar][Ac][i][1], n+1)
-                    used[data[Ar][Ac][i][0]] = 0
-                else:
-                    dfs(Ar, Ac, Br, Bc, value, n + 1)
 
-    elif n == 1:
-        if len(data[Br][Bc]) == 1:
-            if not used[data[Br][Bc][0][0]]:
-                used[data[Br][Bc][0][0]] = 1
-                dfs(Ar, Ac, Br, Bc, value + data[Br][Bc][0][1], n + 1)
-                used[data[Br][Bc][0][0]] = 0
-            else:
-                dfs(Ar, Ac, Br, Bc, value, n + 1)
-        elif len(data[Br][Bc]) == 0:
+        elif len(data[Ar][Ac]) >= 1:                                                # 가능한 충전기가 있을 때
+            for i in range(len(data[Ar][Ac])):                                      # 각 충전기를 돌면서
+                used[data[Ar][Ac][i][0]] = 1                                        # 사용중으로 표시하고- A에서 보는 것은 무조건 used가 초기화되어 있으므로 사용체크는 안한다.
+                dfs(Ar, Ac, Br, Bc, value + data[Ar][Ac][i][1], n+1)                # value에 현재 충전기의 충전량을 더해주고, 다음 유저로 넘어가기
+                used[data[Ar][Ac][i][0]] = 0                                        # return 되었을 때 사용 초기화
+
+    elif n == 1:                                                                    # 현재 봐야할 유저가 B일 때,
+        if len(data[Br][Bc]) == 0:                                                  # 가능한 충전기가 없을 때, 다음 단계로 넘어가기
             dfs(Ar, Ac, Br, Bc, value, n+1)
-        elif len(data[Br][Bc]) > 1:
-            for i in range(len(data[Br][Bc])):
-                if used[data[Br][Bc][i][0]] == 0:
-                    used[data[Br][Bc][i][0]] = 1
+
+        elif len(data[Br][Bc]) >= 1:                                                # 가능한 충전기가 여러개일 때,
+            for i in range(len(data[Br][Bc])):                                      # 각 충전기를 돌면서, 사용 여부를 확인해준다.
+                if used[data[Br][Bc][i][0]] == 0:                                   # A에서 사용하지 않았으면
+                    used[data[Br][Bc][i][0]] = 1                                    # 사용 표시를 하고 value값에 누적한다.
                     dfs(Ar, Ac, Br, Bc, value + data[Br][Bc][i][1], n+1)
-                    used[data[Br][Bc][i][0]] = 0
+                    used[data[Br][Bc][i][0]] = 0                                    # 다음 충전기를 보기 전에, used 초기화
                 else:
-                    dfs(Ar, Ac, Br, Bc, value, n + 1)
+                    dfs(Ar, Ac, Br, Bc, value, n + 1)                               # 이미 A에서 사용했다면 value값에 충전량을 다시 더해주지는 않는다.
 
 
 # 1. input 받기
@@ -86,12 +73,12 @@ for tc in range(1, T+1):
 
 
     # 3. 경로로 이동하며 answer에 충전량 누적하기
-    # 3-1. 0초일 때,
     answer = 0
+    used = [0] * A                          # 충전기 사용 유무 따져야 하므로
+    # 3-1. 0초일 때,
     Ar, Ac = 0, 0
     Br, Bc = 9, 9
     max_val = 0
-    used = [0] * A                          # 충전기 사용 유무 따져야 하므로
     dfs(Ar, Ac, Br, Bc, 0, 0)               # dfs 함수 사용해서 해당 시간에 가능한 최대 충전 범위 찾기
     answer += max_val
     # 3-2. 1초부터 M초까지 확인
