@@ -3,7 +3,7 @@
 
 import sys
 sys.stdin = open('input.txt')
-
+#from pprint import pprint
 from copy import deepcopy
 from collections import deque
 # 반시계는 역순으로
