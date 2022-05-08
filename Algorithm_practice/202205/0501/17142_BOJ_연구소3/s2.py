@@ -1,8 +1,9 @@
-# 재귀로 조합 구현 + 모든 칸 돌면서 바이러스 퍼질 수 있는지 확인 + deepcopy 사용 -> 시간 초과
+# 재귀로 조합 구현 + 모든 칸 돌면서 바이러스 퍼질 수 있는지 확인 + deepcopy 사용 안함 -> 시간 초과
 # import sys
 # sys.stdin = open('input.txt')
-from copy import deepcopy
 # from pprint import pprint
+import sys
+input = sys.stdin.readline
 
 def choosing(choosing_cnt, chosen):
     global min_time
@@ -10,6 +11,15 @@ def choosing(choosing_cnt, chosen):
     # 종료
     if choosing_cnt == M:
         now_time = spread(chosen)
+
+        for wall_element_r, wall_element_c in walls:
+            new_data[wall_element_r][wall_element_c] = -1
+        for viruse_r, viruse_c in viruses:
+            new_data[viruse_r][viruse_c] = '*'
+        for hole_r, hole_c in hole_box:
+            new_data[hole_r][hole_c] = 0
+
+
         if now_time != -1:
             min_time = min(min_time, now_time)
             possible = 1
@@ -21,7 +31,6 @@ def choosing(choosing_cnt, chosen):
 
 delta = [(-1, 0), (1, 0), (0, 1), (0, -1)]
 def spread(chosen):
-    new_data = deepcopy(data)
     for element in chosen[1:]:
         new_data[viruses[element][0]][viruses[element][1]] = '0'
 
@@ -65,19 +74,23 @@ def spread(chosen):
 # T = int(input())
 # for tc in range(1, T+1):
 N, M = map(int, input().split())
-data = [list(map(int, input().split())) for _ in range(N)]
+new_data = [list(map(int, input().split())) for _ in range(N)]
 viruses = []
-holes = 0
+
+walls = []
+hole_box = []
 for r in range(N):
     for c in range(N):
-        if data[r][c] == 1:
-            data[r][c] = -1
-        elif data[r][c] == 2:
-            data[r][c] = '*'
+        if new_data[r][c] == 1:
+            new_data[r][c] = -1
+            walls.append((r,c))
+        elif new_data[r][c] == 2:
+            new_data[r][c] = '*'
             viruses.append((r, c))
-        elif data[r][c] == 0:
-            holes += 1
+        elif new_data[r][c] == 0:
+            hole_box.append((r, c))
 
+holes = len(hole_box)
 min_time = 1000
 if holes == 0:
     print(0)
