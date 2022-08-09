@@ -11,7 +11,7 @@ input = sys.stdin.readline
 # 2. 다익스트라 함수 구현
 import heapq
 def dijkstra(start, roads):
-    global time_sum
+    #global time_sum                                                                # global 쓰면 시간이 많이 걸림! - 배열이므로 굳이 global 안써도 됨
     visited = [0] * (N+1)
     heap = []
     heapq.heappush(heap, (0, start))
