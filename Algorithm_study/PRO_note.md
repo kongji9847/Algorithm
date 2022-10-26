@@ -10,9 +10,26 @@
 
 
 
-## 1. Build Test & 디버깅
 
-### 1.1. Build Test
+
+## 1. 시간복잡도
+
+```
+O(N) : N이 1억(100,000,000)일 때, 1초 걸린다.
+O(N^2) : N이 10,000일 때, 1초가 걸린다.
+O(N^3) : N이 1000일 때, 10초가 걸린다.
+O(NlogN) :
+
+BFS의 시간복잡도는 O(노드개수)
+```
+
+
+
+
+
+## 2. C++ 시작
+
+### 2.1. Build Test
 
 ```c++
 #include<iostream>
@@ -36,7 +53,29 @@ int main()
 
 
 
-### 1.2. 디버그 단축키
+### 2.2. 파일 입출력
+
+```c++
+#define _CRT_SECURE_NO_WARNINGS			// 일부 버전에 안전성의 문제로 warning을 발생시키므로
+#include <iostream>
+
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	freopen_s(new FILE*, "input.txt", "r", stdin);
+}
+```
+
+- `input`은 `리소스 파일`에 `"input.txt"`로 저장하고 사용한다.
+- 추가해준 코드 2줄은 답안 제출시 주석 처리 해야한다.
+
+
+
+### 2.3. 디버그 단축키
 
 ```
 // 단축키
@@ -65,151 +104,134 @@ vs : shift + F11
 
 
 
-#### 1.2.1 디버그 연습 코드
+
+
+## 3. C++ 문법 Tip!
+
+
+
+
+
+
+
+## 4. Binary Search
+
+### 4.1. 기초 코드(중복X)
 
 ```c++
-// Break Point와 Step Over 그리고 Trace를 종료하는 단축키를 반복 연습합니다.
+#include <iostream>
 
-#include<iostream>
 using namespace std;
 
-int main()
-{
-//Break Point
-	cout << "A" << "\n";
-	cout << "B" << "\n";
-	cout << "C" << "\n";
-	cout << "D" << "\n";
-//Break Point, Step Over
-	cout << "E" << "\n";
-	cout << "F" << "\n";
-	cout << "G" << "\n";
-	cout << "H" << "\n";
-//Finish
-	cout << "I" << "\n";
-	cout << "J" << "\n";
+int arr[8] = { 0, 3, 4, 6, 7, 9, 11, 17 };
+
+int binary_search(int finding) {
+	int s = 0;
+	int e = 8;			// e = arr.size()
+	int ans;
+
+	// s가 e와 같다는 것은 s = e = mid 이므로 제일 마지막까지 가본 것 
+	// -> 이후에 s와 e는 엇갈려서 while문이 끝난다.
+	while (s <= e) {
+		int mid = (s + e) / 2;
+
+		if (arr[mid] == finding) {
+			ans = mid;
+			return ans;
+		}
+
+		// 찾는 것이 mid보다 왼쪽에 가 있으면 
+		// -> 다음 끝지점을 mid 앞으로 당겨준다.
+		else if (arr[mid] > finding) {
+			e = mid - 1;
+		}
+
+		// 찾는 것이 mid 보다 오른쪽에 가 있으면
+		// 다음 구간을 mid 오른쪽으로 이동시킨다.
+		else if (arr[mid] < finding) {
+			s = mid + 1;
+		}
+	}
+
+	// while문을 빠져나왔다는 것은 찾지 못하였다는 뜻
+	return -1;
+}
+
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cout << binary_search(4) << "\n";		// 2
+	cout << binary_search(19) << "\n";		// -1
 
 	return 0;
 }
 ```
 
-```c++
-/*
-조사식에 변수를 등록합니다.
-Break Point, Run to cursor, Step Into 단축키를 연습합니다.
-*/
 
-#include<iostream>
-using namespace std;
 
-void BTS() {
-    cout << "A" << "\n"; 
-    cout << "B" << "\n"; 
-}
-int main()
-{
-    int x;
- //Break Point
-    x = 1;
-    x = 2;
-    x = 3;
-    x = 4;
-    x = 5;
-    x = 6;
- //Run to cursor, Step Over
-    x = 10;
-    x = 20;
-    x = 30;
-    x = 40;
- //Step Into
-    BTS();
-    x = -1;
-    x = -2;
- //Finish Trace
-    x = -3;
-    return 0; 
-}
-```
-
-``` c++
-// step over와 step into 헷갈리지 않게 연습
-
-#include<iostream>
-using namespace std;
-
-void over() {
-    for (int i = 0; i < 10; i++) {
-        cout << "#";
-    }
-    cout << "\n"; 
-    cout << "OVER" << "\n"; 
-}
-
-void into() {
-    cout << "INTO" << "\n"; 
-}
-
-int main()
-{
-    //breakpoint
-    over(); //over
-    into(); //into
-    over();
-    over();
-    over();
-    into();
-    over();
-    into();
-    over();
-    into();
-    over();
-    return 0; 
-}
-```
+### 4.2. 중복된 수의 구간 찾기
 
 ```c++
-#include<iostream>
-using namespace std; 
+int arr[25] = { 1,5,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,21,25,127,10000,99999,99999999 };
 
+void binary_search(int finding) {
 
-void gogo()
-{
-    cout << "GOGO"<<endl;
-}
+	// 10이 처음으로 나오는 시작점 구하기 
+	// -> 10을 찾는 것이 아니라 시작점을 찾는 것!
+	int s = 0;
+	int e = 25 - 1;
+	int begin_ = 25 - 1;		// 제일 큰 수로 초기화 해준다.
 
-void bts()
-{
-    gogo();
-    cout << "BTS Last" << "\n";
-}
+	while (s <= e) {
+		int mid = (s + e) / 2;
+		
+		if (finding == arr[mid]) {
+			// 시작지점일 수 있으므로 일단 시작점 갱신
+			begin_ = min(begin_, mid);
 
-void abc()
-{
-    bts();
-    gogo();
-    cout << "ABC Last" << "\n";
-}
+			// 시작지점은 더 앞에 있을 수도 있으니까 왼쪽으로 구간 당기기
+			e = mid - 1;
+		}
+		else if (finding < arr[mid]) { e = mid - 1; }
+		else if (finding > arr[mid]) { s = mid + 1; }
+	}
 
-int main() {
-    gogo();
-    abc();
-    bts();
-    cout << "HOME";
+    
+	// 10 이 마지막으로 나오는 구간 찾기;
+	s = 0;
+	e = 24;
+	int end_ = 0;
+
+	while (s <= e) {
+		int mid = (s + e) / 2;
+
+		if (finding == arr[mid]) {
+			// 끝지점일 수도 있으므로 끝점 갱신
+			end_ = max(end_, mid);
+
+			// 끝지점은 더 뒤에 있을 수도 있으니까 오른쪽으로 구간 잡기
+			s = mid + 1;
+		}
+		else if (finding < arr[mid]) { e = mid - 1; }
+		else if (finding > arr[mid]) { s = mid + 1; }
+	}
+
+	cout << begin_ << " " << end_ << "\n";
 }
 ```
 
 
 
-## 2. 시간복잡도
 
-```
-O(N) : N이 1억(100,000,000)일 때, 1초 걸린다.
-O(N^2) : N이 10,000일 때, 1초가 걸린다.
-O(N^3) : N이 1000일 때, 10초가 걸린다.
-O(NlogN) :
 
-BFS의 시간복잡도는 O(노드개수)
-```
+
+
+
+
+
 
 
 
