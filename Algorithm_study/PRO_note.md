@@ -108,6 +108,67 @@ vs : shift + F11
 
 ## 3. C++ 문법 Tip!
 
+### 3.1 동적 배열
+
+```c++
+// arr의 인덱스 하나하나가 vector
+vector<int> arr[100];
+
+// arr[0] = {1, 2, 3}
+// arr[1] = {0, 3}
+// arr[2] = {9}
+```
+
+```c++
+#include<iostream>
+#include<vector>
+
+
+int main() {
+    vector<int> arr[10];
+    for (int i = 0; i < 10; i++) {
+        cin >> from >> to;
+        arr[from].push_back(to);
+    }
+}
+```
+
+- `vector`에 원소를 넣기 위해서는 `push_back`을 사용한다.
+
+
+
+```c++
+// arr 자체가 vector
+vector<int> arr(N);
+
+// arr = {1, 3, 5, 2}
+```
+
+
+
+### 3.2 for each문
+
+```c++
+#include<iostream>
+#include<vector>
+
+
+int main() {
+    vector<int> arr = {1, 2, 4,5}; 
+    for (int i = 0; arr) {
+        cout << i << "\n";
+    }
+}
+```
+
+
+
+### 3.3 배열 초기화
+
+
+
+
+
 
 
 
@@ -222,6 +283,8 @@ void binary_search(int finding) {
 	cout << begin_ << " " << end_ << "\n";
 }
 ```
+
+
 
 
 
@@ -406,6 +469,26 @@ int main()
 
 ### 99.2. 우선순위에 따라 정렬하기
 
+#### 99.2.1 `sort` 커스텀
+
+#### 99.2.2  `priority queue` 커스텀
+
+
+
+
+
+### 99.3. 주기함수 공식
+
+```
+- K: 주기의 나머지를 구하려는 수
+- n: 주기
+
+음수 및 양수 K에서 모두 사용 가능!
+(K % n + n) % n
+```
+
+
+
 
 
 
@@ -426,3 +509,6 @@ b--------c
 
 a와 c만 구하면 된다.
 ```
+
+
+
