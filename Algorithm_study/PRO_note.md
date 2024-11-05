@@ -155,7 +155,7 @@ vector<int> arr(N);
 
 int main() {
     vector<int> arr = {1, 2, 4,5}; 
-    for (int i = 0; arr) {
+    for (int i; arr) {
         cout << i << "\n";
     }
 }
